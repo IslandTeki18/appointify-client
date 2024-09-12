@@ -1,10 +1,11 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   BookingPage,
   ConfirmationPage,
   LandingPage,
   NotFoundPage,
+  EventTypeListPage,
 } from "../features/Public";
 import { SignInPage, SignUpPage } from "../features/Authentication";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -18,13 +19,16 @@ function AuthenticationLayout() {
     { name: "Booking", href: "/booking", current: false },
     { name: "Sign In", href: "/sign-in", current: false },
   ]);
-  useEffect(() => {
-    const updatedNavItems = navigation.map((item) => ({
+  const updatedNavItems = useMemo(() => {
+    return navigation.map((item) => ({
       ...item,
       current: item.href === location.pathname,
     }));
+  }, [location.pathname, navigation]);
+
+  useEffect(() => {
     setNavigation(updatedNavItems);
-  }, [location, navigation]);
+  }, []);
   return (
     <>
       {user !== null && <Navbar navigation={navigation} />}
@@ -36,22 +40,23 @@ function AuthenticationLayout() {
 function NonAuthenticatedRoutes() {
   const [navigation, setNavigation] = React.useState([
     { name: "Home", href: "/", current: true },
-    { name: "Booking", href: "/booking", current: false },
-    { name: "Sign In", href: "/sign-in", current: false },
   ]);
-  useEffect(() => {
-    const updatedNavItems = navigation.map((item) => ({
+  const updatedNavItems = useMemo(() => {
+    return navigation.map((item) => ({
       ...item,
       current: item.href === location.pathname,
     }));
+  }, [location.pathname, navigation]);
+
+  useEffect(() => {
     setNavigation(updatedNavItems);
-  }, [location, navigation]);
+  }, []);
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <Navbar navigation={navigation} />
       <Outlet />
       <Footer />
-    </>
+    </div>
   );
 }
 
@@ -74,11 +79,11 @@ export const mainRoutes = [
     element: <NonAuthenticatedRoutes />,
     children: [
       {
-        element: <LandingPage />,
+        element: <EventTypeListPage />,
         index: true,
       },
       {
-        path: "/booking",
+        path: "/book/:eventTypeId",
         element: <BookingPage />,
       },
       {
