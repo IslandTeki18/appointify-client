@@ -79,7 +79,23 @@ export const BookingPage = () => {
           params: { date: clickedDate },
         }
       );
-      setAvailableSlots(response.data);
+
+      // Filter out booked slots
+      const bookedSlots =
+        availabilityData?.scheduledTimes.find(
+          (scheduled) => scheduled.date === clickedDate
+        )?.times || [];
+
+      const filteredSlots = response.data.filter(
+        (slot: TimeSlot) =>
+          !bookedSlots.some(
+            (bookedSlot) =>
+              new Date(bookedSlot.start).getTime() ===
+              new Date(slot.start).getTime()
+          )
+      );
+
+      setAvailableSlots(filteredSlots);
     } catch (error) {
       console.error("Error fetching available slots:", error);
     }
@@ -96,9 +112,15 @@ export const BookingPage = () => {
     }
 
     try {
+      // Parse the start time and adjust it to ISO string with local timezone offset
+      const startDate = new Date(selectedSlot.start);
+      const startTimeISO = new Date(
+        startDate.getTime() - startDate.getTimezoneOffset() * 60000
+      ).toISOString();
+
       await axios.post("http://localhost:5000/api/appointments", {
         eventTypeId,
-        startTime: selectedSlot.start,
+        startTime: startTimeISO,
         attendee: {
           name: attendeeName,
           email: attendeeEmail,
@@ -106,7 +128,14 @@ export const BookingPage = () => {
       });
 
       alert("Appointment booked successfully!");
-      // TODO: Redirect to confirmation page or update UI
+      // Refresh availability data after booking
+      const response = await axios.get(
+        `http://localhost:5000/api/event-types/${eventTypeId}/available-dates`
+      );
+      setAvailabilityData(response.data);
+      setSelectedSlot(null);
+      setAttendeeEmail("");
+      setAttendeeName("");
     } catch (error) {
       console.error("Error booking appointment:", error);
       alert("Failed to book appointment. Please try again.");
@@ -127,8 +156,8 @@ export const BookingPage = () => {
 
     // Add scheduled times
     calendarEvents.push(
-      ...availabilityData.scheduledTimes.flatMap((scheduled: any) =>
-        scheduled.times.map((time: any) => ({
+      ...availabilityData.scheduledTimes.flatMap((scheduled) =>
+        scheduled.times.map((time) => ({
           start: time.start,
           end: time.end,
           display: "block",
