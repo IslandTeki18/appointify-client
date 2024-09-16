@@ -85,7 +85,7 @@ export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
       <div className="bg-gray-50 px-6 py-3 flex justify-between items-center">
         <p className="text-gray-500 text-sm">Event Type ID: {eventType._id}</p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3 px-4 py-4">
+      <div className="grid grid-cols-1 items-center gap-3 px-4 py-4">
         <Button
           className="w-full flex items-center justify-center gap-2"
           variant="primary"
@@ -93,22 +93,6 @@ export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
         >
           <EyeIcon className="w-4 h-4" />
           View
-        </Button>
-        <Button
-          className="w-full flex items-center justify-center gap-2"
-          variant="secondary"
-          onClick={() => {}}
-        >
-          <PencilIcon className="w-4 h-4" />
-          Edit
-        </Button>
-        <Button
-          className="w-full flex items-center justify-center gap-2"
-          variant="danger"
-          onClick={() => {}}
-        >
-          <TrashIcon className="w-4 h-4" />
-          Delete
         </Button>
       </div>
     </Card>

@@ -1,18 +1,20 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { HeaderSection, Card, Button } from "~src/components";
+import { HeaderSection, Card, Button, Modal } from "~src/components";
 import { useParams } from "react-router-dom";
 import { getEventDetails } from "../api/getEventDetails";
+import { deleteEventType } from "../api/deleteEventType";
+import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "~src/hooks/useAuthContext";
 import { EventType } from "~src/types/types";
-import {
-  CalendarIcon,
-  ClockIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
+import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/24/outline";
 
 export const EventDetailsPage = () => {
+  const navigate = useNavigate();
+  const { user } = useAuthContext();
   const { eventId } = useParams();
   const [eventDetails, setEventDetails] = useState<EventType | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -29,8 +31,9 @@ export const EventDetailsPage = () => {
   }, [eventId]);
 
   const handleDelete = async () => {
-    // Implement delete functionality
-    console.log("Delete event:", eventId);
+    deleteEventType(eventId!, user!.token);
+    setIsDeleteModalOpen(false);
+    navigate("/dashboard");
   };
 
   const handleEdit = async () => {
@@ -79,7 +82,9 @@ export const EventDetailsPage = () => {
             <div>
               <p className="text-sm font-medium text-gray-500">Availability</p>
               <p className="text-lg text-gray-900">
-                {getDayName(eventDetails.availability.days[0])}:{" "}
+                {eventDetails.availability.days.map(getDayName).join(", ")}
+              </p>
+              <p className="text-lg text-gray-900">
                 {eventDetails.availability.startTime} -{" "}
                 {eventDetails.availability.endTime}
               </p>
@@ -98,12 +103,26 @@ export const EventDetailsPage = () => {
           </div>
           <div className="flex space-x-4 pt-4">
             <Button onClick={handleEdit}>Edit Event</Button>
-            <Button variant="danger" onClick={handleDelete}>
+
+            <Button variant="danger" onClick={() => setIsDeleteModalOpen(true)}>
               Delete Event
             </Button>
           </div>
         </Card>
       </div>
+      <Modal
+        variant="secondary"
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Delete Event?"
+      >
+        <p>Are you sure you want to delete this event?</p>
+        <div className="flex justify-end gap-4 mt-4">
+          <Button variant="danger" onClick={handleDelete}>
+            Yes, delete this event.
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 };

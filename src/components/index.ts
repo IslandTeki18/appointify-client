@@ -6,3 +6,4 @@ export * from "./Avatar";
 export * from "./HeaderSection";
 export * from "./Form";
 export * from "./Card";
+export * from "./Modal";
