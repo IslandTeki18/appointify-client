@@ -21,7 +21,7 @@ export const HeaderSection = ({
   variant = "primary",
 }: HeaderSectionProps) => {
   return (
-    <div className={`py-24 sm:py-32 ${variantClasses[variant]}`}>
+    <div className={`py-24 sm:py-24 ${variantClasses[variant]}`}>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h2 className="text-5xl font-bold tracking-tight sm:text-6xl">

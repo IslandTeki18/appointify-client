@@ -25,7 +25,7 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <div
-      className={`${className}rounded-lg overflow-hidden shadow-lg ${variantStyles[variant]} border`}
+      className={`${className} rounded-lg overflow-hidden shadow-lg ${variantStyles[variant]} border`}
     >
       {children}
     </div>

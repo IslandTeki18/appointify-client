@@ -1,6 +1,14 @@
 import React from "react";
-import { CalendarIcon, ClockIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Card } from "~src/components";
+import {
+  CalendarIcon,
+  ClockIcon,
+  EyeIcon,
+  PencilIcon,
+  TrashIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import { Card, Button } from "~src/components";
+import { useNavigate } from "react-router-dom";
 
 interface Availability {
   days: number[];
@@ -23,6 +31,7 @@ interface EventTypeCardProps {
 }
 
 export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
+  const navigate = useNavigate();
   const getDayName = (day: number): string => {
     const days = [
       "Sunday",
@@ -33,7 +42,7 @@ export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
       "Friday",
       "Saturday",
     ];
-    return days[day - 1]; // Adjusting for 0-based index
+    return days[day];
   };
 
   const formatDuration = (minutes: number): string => {
@@ -43,7 +52,7 @@ export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
   };
 
   return (
-    <Card variant="clear">
+    <Card variant="clear" className="flex flex-col justify-between">
       <div className="bg-purple-600 text-white px-6 py-4">
         <h2 className="text-2xl font-semibold">{eventType.title}</h2>
         <p className="text-indigo-100">{eventType.description}</p>
@@ -73,8 +82,34 @@ export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
           <span className="text-gray-700">User ID: {eventType.user}</span>
         </div>
       </div>
-      <div className="bg-gray-50 px-6 py-3">
+      <div className="bg-gray-50 px-6 py-3 flex justify-between items-center">
         <p className="text-gray-500 text-sm">Event Type ID: {eventType._id}</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-3 px-4 py-4">
+        <Button
+          className="w-full flex items-center justify-center gap-2"
+          variant="primary"
+          onClick={() => navigate(`/event-types/${eventType._id}`)}
+        >
+          <EyeIcon className="w-4 h-4" />
+          View
+        </Button>
+        <Button
+          className="w-full flex items-center justify-center gap-2"
+          variant="secondary"
+          onClick={() => {}}
+        >
+          <PencilIcon className="w-4 h-4" />
+          Edit
+        </Button>
+        <Button
+          className="w-full flex items-center justify-center gap-2"
+          variant="danger"
+          onClick={() => {}}
+        >
+          <TrashIcon className="w-4 h-4" />
+          Delete
+        </Button>
       </div>
     </Card>
   );

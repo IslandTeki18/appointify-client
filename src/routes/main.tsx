@@ -29,7 +29,7 @@ function AuthenticationLayout() {
 
   useEffect(() => {
     setNavigation(updatedNavItems);
-  }, []);
+  }, [location.pathname]);
 
   return (
     <>
