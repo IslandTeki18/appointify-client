@@ -1,12 +1,22 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input, Form, Button } from "~src/components";
 import { useSignIn } from "../hooks";
+import { useAuthContext } from "~src/hooks/useAuthContext";
+import { useNavigate } from "react-router-dom";
 
 export const SignInPage = () => {
+  const navigate = useNavigate();
   const { error, isLoading, signIn } = useSignIn();
+  const { user } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (user !== null) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -39,9 +49,9 @@ export const SignInPage = () => {
         <Button
           type="submit"
           variant="primary"
-          disabled={!isLoading || !email || !password}
+          disabled={isLoading || !email || !password}
         >
-          Sign In
+          {isLoading ? "Signing In..." : "Sign In"}
         </Button>
       </Form>
     </div>

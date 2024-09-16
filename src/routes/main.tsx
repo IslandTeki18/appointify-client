@@ -11,13 +11,14 @@ import { SignInPage, SignUpPage } from "../features/Authentication";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Footer, Navbar } from "~src/components";
+import { DashboardPage } from "~src/features/User";
 
 function AuthenticationLayout() {
   const { user } = useAuthContext();
   const [navigation, setNavigation] = React.useState([
-    { name: "Home", href: "/", current: true },
-    { name: "Booking", href: "/booking", current: false },
-    { name: "Sign In", href: "/sign-in", current: false },
+    { name: "Dashboard", href: "/dashboard", current: true },
+    { name: "Event Types", href: "/event-types", current: false },
+    { name: "Logout", href: "/logout", current: false },
   ]);
   const updatedNavItems = useMemo(() => {
     return navigation.map((item) => ({
@@ -106,7 +107,7 @@ export const mainRoutes = [
     children: [
       {
         path: "/dashboard",
-        element: <div className="">Dashboard</div>,
+        element: <ProtectedRoute element={<DashboardPage />} />,
       },
     ],
   },

@@ -6,7 +6,7 @@ import axios from "axios";
 export const useSignIn = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { dispatch } = useAuthContext();
+  const { login } = useAuthContext();
   const navigate = useNavigate();
 
   const signIn = async (email: string, password: string) => {
@@ -21,7 +21,7 @@ export const useSignIn = () => {
       );
       localStorage.setItem("userInfo", JSON.stringify(response));
       if (response) {
-        dispatch({ type: "LOGIN", payload: response });
+        login(response.data);
         navigate("/dashboard");
       }
     } catch (error) {
