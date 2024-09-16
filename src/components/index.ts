@@ -5,3 +5,4 @@ export * from "./Navbar";
 export * from "./Avatar";
 export * from "./HeaderSection";
 export * from "./Form";
+export * from "./Card";
