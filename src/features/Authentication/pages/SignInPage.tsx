@@ -1,13 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
-import { Input, Form } from "~src/components";
+import { Input, Form, Button } from "~src/components";
+import { useSignIn } from "../hooks";
 
 export const SignInPage = () => {
+  const { error, isLoading, signIn } = useSignIn();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    signIn(email, password);
   }
   return (
     <div className="min-h-[65vh] flex justify-center items-center">
@@ -17,7 +20,7 @@ export const SignInPage = () => {
         className="flex flex-col gap-6 w-1/3"
         onSubmit={handleSubmit}
       >
-        <h1 className="text-2xl font-bold">Sign In</h1>
+        <h1 className="text-2xl font-bold mb-4">Login</h1>
         <Input
           label="Email"
           type="email"
@@ -32,12 +35,14 @@ export const SignInPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button
+        {error && <div className="text-red-500">{error}</div>}
+        <Button
           type="submit"
-          className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          variant="primary"
+          disabled={!isLoading || !email || !password}
         >
           Sign In
-        </button>
+        </Button>
       </Form>
     </div>
   );
