@@ -6,6 +6,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: InputVariant;
   label?: string;
   id?: string;
+  required?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -13,6 +14,7 @@ export const Input: React.FC<InputProps> = ({
   label,
   className = "",
   id,
+  required = false,
   ...props
 }) => {
   const baseClasses =
@@ -32,12 +34,15 @@ export const Input: React.FC<InputProps> = ({
   return (
     <div className="flex flex-col">
       {label && (
-        <label
-          htmlFor={id}
-          className="mb-1 font-medium text-gray-700 dark:text-gray-200"
-        >
-          {label}
-        </label>
+        <div className="flex items-center gap-1">
+          <label
+            htmlFor={id}
+            className="mb-1 font-medium text-gray-700 dark:text-gray-200"
+            >
+            {label}
+          </label>
+            {required && <span className="text-red-500">*</span>}
+        </div>
       )}
       <input className={combinedClasses} {...props} />
     </div>

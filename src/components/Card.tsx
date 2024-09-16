@@ -1,9 +1,8 @@
 import * as React from "react";
 
 type CardProps = {
-  title: string;
-  content: string;
   variant?: "primary" | "secondary" | "success" | "danger";
+  children: React.ReactNode;
 };
 
 const variantStyles = {
@@ -18,17 +17,15 @@ const variantStyles = {
 };
 
 export const Card: React.FC<CardProps> = ({
-  title,
-  content,
   variant = "primary",
+  children,
 }) => {
   return (
     <div
       className={`max-w-sm rounded overflow-hidden shadow-lg ${variantStyles[variant]} border`}
     >
       <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{title}</div>
-        <p className="text-base">{content}</p>
+       {children}
       </div>
     </div>
   );

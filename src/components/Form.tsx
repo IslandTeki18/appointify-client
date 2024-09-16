@@ -6,6 +6,7 @@ interface FormProps {
   children: ReactNode;
   variant?: "primary" | "secondary" | "success" | "danger";
   darkMode?: boolean;
+  className?: string;
 }
 
 export const Form: React.FC<FormProps> = ({
@@ -13,8 +14,9 @@ export const Form: React.FC<FormProps> = ({
   children,
   variant = "primary",
   darkMode = false,
+  className = "",
 }) => {
-  const baseClasses = "p-4 rounded-lg transition-colors duration-200";
+  const baseClasses = "p-6 rounded-lg transition-colors duration-200";
 
   const variantClasses = {
     primary: darkMode
@@ -32,7 +34,7 @@ export const Form: React.FC<FormProps> = ({
   return (
     <form
       onSubmit={onSubmit}
-      className={`${baseClasses} ${variantClasses[variant]}`}
+      className={`${className} ${baseClasses} ${variantClasses[variant]}`}
     >
       {children}
     </form>
