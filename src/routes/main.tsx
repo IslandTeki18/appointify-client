@@ -11,13 +11,13 @@ import { SignInPage, SignUpPage } from "../features/Authentication";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Footer, Navbar } from "~src/components";
-import { DashboardPage } from "~src/features/User";
+import { DashboardPage, CreateEventTypesPage } from "~src/features/User";
 
 function AuthenticationLayout() {
   const { user } = useAuthContext();
   const [navigation, setNavigation] = React.useState([
     { name: "Dashboard", href: "/dashboard", current: true },
-    { name: "Event Types", href: "/event-types", current: false },
+    { name: "Create Event", href: "/create-event-types", current: false },
     { name: "Logout", href: "/logout", current: false },
   ]);
   const updatedNavItems = useMemo(() => {
@@ -30,6 +30,7 @@ function AuthenticationLayout() {
   useEffect(() => {
     setNavigation(updatedNavItems);
   }, []);
+
   return (
     <>
       {user !== null && <Navbar navigation={navigation} />}
@@ -53,6 +54,7 @@ function NonAuthenticatedRoutes() {
   useEffect(() => {
     setNavigation(updatedNavItems);
   }, []);
+  
   return (
     <div className="flex flex-col h-screen">
       <Navbar navigation={navigation} />
@@ -70,7 +72,7 @@ function ProtectedRoute({ element }: { element: React.ReactElement }) {
     if (user === null) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user]);
 
   return element;
 }
@@ -108,6 +110,10 @@ export const mainRoutes = [
       {
         path: "/dashboard",
         element: <ProtectedRoute element={<DashboardPage />} />,
+      },
+      {
+        path: "/create-event-types",
+        element: <ProtectedRoute element={<CreateEventTypesPage />} />,
       },
     ],
   },

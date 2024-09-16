@@ -15,6 +15,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Avatar } from "./Avatar";
+import { NavLink } from "react-router-dom";
 
 type NavItem = {
   name: string;
@@ -66,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   logoSrc,
   profileImageSrc,
   variant = "secondary",
-    hasAvatar = false,
+  hasAvatar = false,
 }) => {
   const variantStyle = variantClasses[variant];
 
@@ -104,9 +105,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
+                      <NavLink
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           item.current
                             ? variantStyle.active
@@ -117,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         aria-current={item.current ? "page" : undefined}
                       >
                         {item.name}
-                      </a>
+                      </NavLink>
                     ))}
                   </div>
                 </div>

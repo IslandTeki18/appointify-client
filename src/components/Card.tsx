@@ -1,7 +1,8 @@
 import * as React from "react";
 
 type CardProps = {
-  variant?: "primary" | "secondary" | "success" | "danger";
+  variant?: "primary" | "secondary" | "success" | "danger" | "clear";
+  className?: string;
   children: React.ReactNode;
 };
 
@@ -14,19 +15,19 @@ const variantStyles = {
     "bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100 border-green-300 dark:border-green-600",
   danger:
     "bg-red-100 dark:bg-red-800 text-red-800 dark:text-red-100 border-red-300 dark:border-red-600",
+  clear: "bg-white text-black border-gray-300",
 };
 
 export const Card: React.FC<CardProps> = ({
   variant = "primary",
   children,
+  className = "",
 }) => {
   return (
     <div
-      className={`max-w-sm rounded overflow-hidden shadow-lg ${variantStyles[variant]} border`}
+      className={`${className}rounded-lg overflow-hidden shadow-lg ${variantStyles[variant]} border`}
     >
-      <div className="px-6 py-4">
-       {children}
-      </div>
+      {children}
     </div>
   );
 };

@@ -10,7 +10,7 @@ import {
 type User = {
   // Define user properties here
   _id: string;
-  email: string;
+  user: any;
   token: string;
 };
 
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     dispatch({ type: "LOGOUT" });
   };
 
-  console.log("AuthContext state: ", state);
+  console.log("AuthContext state: ", state.user);
 
   return (
     <AuthContext.Provider value={{ ...state, dispatch, login, logout }}>
