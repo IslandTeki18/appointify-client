@@ -11,7 +11,11 @@ import { SignInPage, SignUpPage } from "../features/Authentication";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { Footer, Navbar } from "~src/components";
-import { DashboardPage, CreateEventTypesPage } from "~src/features/User";
+import {
+  DashboardPage,
+  CreateEventTypesPage,
+  EventDetailsPage,
+} from "~src/features/User";
 
 function AuthenticationLayout() {
   const { user } = useAuthContext();
@@ -54,7 +58,7 @@ function NonAuthenticatedRoutes() {
   useEffect(() => {
     setNavigation(updatedNavItems);
   }, []);
-  
+
   return (
     <div className="flex flex-col h-screen">
       <Navbar navigation={navigation} />
@@ -114,6 +118,10 @@ export const mainRoutes = [
       {
         path: "/create-event-types",
         element: <ProtectedRoute element={<CreateEventTypesPage />} />,
+      },
+      {
+        path: "/event-details/:eventId",
+        element: <ProtectedRoute element={<EventDetailsPage />} />,
       },
     ],
   },

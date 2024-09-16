@@ -89,7 +89,7 @@ export const EventTypeCard: React.FC<EventTypeCardProps> = ({ eventType }) => {
         <Button
           className="w-full flex items-center justify-center gap-2"
           variant="primary"
-          onClick={() => navigate(`/event-types/${eventType._id}`)}
+          onClick={() => navigate(`/event-details/${eventType._id}`)}
         >
           <EyeIcon className="w-4 h-4" />
           View
