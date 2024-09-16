@@ -40,6 +40,7 @@ function AuthenticationLayout() {
 function NonAuthenticatedRoutes() {
   const [navigation, setNavigation] = React.useState([
     { name: "Home", href: "/", current: true },
+    { name: "Login", href: "/sign-in", current: false },
   ]);
   const updatedNavItems = useMemo(() => {
     return navigation.map((item) => ({
