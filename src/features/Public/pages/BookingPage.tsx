@@ -5,6 +5,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { EventInput } from "@fullcalendar/core";
 import { useParams } from "react-router-dom";
+import { getUserTimezone } from "~src/utils/helperFunctions";
+import moment from "moment-timezone";
 import axios from "axios";
 
 interface EventType {
@@ -15,8 +17,8 @@ interface EventType {
 }
 
 interface TimeSlot {
-  start: string;
-  end: string;
+  start: Date;
+  end: Date;
 }
 
 interface ScheduledTime {
@@ -53,9 +55,13 @@ export const BookingPage = () => {
     };
 
     const fetchAvailabilityData = async () => {
+      const userTimezone = getUserTimezone();
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/event-types/${eventTypeId}/available-dates`
+          `http://localhost:5000/api/event-types/${eventTypeId}/available-dates`,
+          {
+            params: { timezone: userTimezone },
+          }
         );
         setAvailabilityData(response.data);
       } catch (error) {
@@ -68,15 +74,18 @@ export const BookingPage = () => {
   }, [eventTypeId]);
 
   const handleDateClick = async (arg: any) => {
-    const clickedDate = arg.dateStr;
-    setSelectedDate(clickedDate);
+    const clickedDate = arg.date;
+    const formattedDate = clickedDate.toISOString().split("T")[0];
+    setSelectedDate(formattedDate);
     setSelectedSlot(null);
+
+    const userTimezone = getUserTimezone();
 
     try {
       const response = await axios.get(
         `http://localhost:5000/api/event-types/${eventTypeId}/available-slots`,
         {
-          params: { date: clickedDate },
+          params: { date: formattedDate, timezone: userTimezone },
         }
       );
 
@@ -111,16 +120,19 @@ export const BookingPage = () => {
       return;
     }
 
+    const userTimezone = getUserTimezone();
+
     try {
-      // Parse the start time and adjust it to ISO string with local timezone offset
-      const startDate = new Date(selectedSlot.start);
-      const startTimeISO = new Date(
-        startDate.getTime() - startDate.getTimezoneOffset() * 60000
-      ).toISOString();
+      // Parse the start time string to a moment object
+      const startTimeMoment = moment.tz(selectedSlot.start, userTimezone);
+
+      // Convert to ISO string
+      const startTimeISO = startTimeMoment.toISOString();
 
       await axios.post("http://localhost:5000/api/appointments", {
         eventTypeId,
         startTime: startTimeISO,
+        timezone: userTimezone,
         attendee: {
           name: attendeeName,
           email: attendeeEmail,
@@ -150,7 +162,6 @@ export const BookingPage = () => {
       ...availabilityData.availableDates.map((date) => ({
         start: date,
         display: "background",
-        backgroundColor: "#4CAF50",
       }))
     );
 
@@ -182,9 +193,9 @@ export const BookingPage = () => {
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth",
+            start: "title",
+            center: "",
+            end: "today prev,next",
           }}
           events={calendarEvents}
           dateClick={handleDateClick}
@@ -214,6 +225,7 @@ export const BookingPage = () => {
                   {new Date(slot.start).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
+                    hour12: true, // This ensures AM/PM display
                   })}
                 </button>
               ))}
@@ -226,7 +238,17 @@ export const BookingPage = () => {
       {selectedSlot && (
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-2">Book Appointment</h2>
-          <p>Selected time: {new Date(selectedSlot.start).toLocaleString()}</p>
+          <p>
+            Selected time:{" "}
+            {new Date(selectedSlot.start).toLocaleString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })}
+          </p>
           <input
             type="text"
             placeholder="Your Name"
