@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -73,7 +73,21 @@ export const BookingPage = () => {
     fetchAvailabilityData();
   }, [eventTypeId]);
 
+  const handleSlotSelect = (slot: TimeSlot) => {
+    setSelectedSlot(slot);
+  };
+
+  const isDateAvailable = useCallback(
+    (date: Date) => {
+      if (!availabilityData) return false;
+      const formattedDate = date.toISOString().split("T")[0];
+      return availabilityData.availableDates.includes(formattedDate);
+    },
+    [availabilityData]
+  );
   const handleDateClick = async (arg: any) => {
+    if (!isDateAvailable(arg.date)) return;
+
     const clickedDate = arg.date;
     const formattedDate = clickedDate.toISOString().split("T")[0];
     setSelectedDate(formattedDate);
@@ -92,7 +106,7 @@ export const BookingPage = () => {
       // Filter out booked slots
       const bookedSlots =
         availabilityData?.scheduledTimes.find(
-          (scheduled) => scheduled.date === clickedDate
+          (scheduled) => scheduled.date === formattedDate
         )?.times || [];
 
       const filteredSlots = response.data.filter(
@@ -108,10 +122,6 @@ export const BookingPage = () => {
     } catch (error) {
       console.error("Error fetching available slots:", error);
     }
-  };
-
-  const handleSlotSelect = (slot: TimeSlot) => {
-    setSelectedSlot(slot);
   };
 
   const handleBooking = async () => {
@@ -140,7 +150,6 @@ export const BookingPage = () => {
       });
 
       alert("Appointment booked successfully!");
-      // Refresh availability data after booking
       const response = await axios.get(
         `http://localhost:5000/api/event-types/${eventTypeId}/available-dates`
       );
@@ -199,6 +208,7 @@ export const BookingPage = () => {
           }}
           events={calendarEvents}
           dateClick={handleDateClick}
+          selectAllow={(selectInfo) => isDateAvailable(selectInfo.start)}
           validRange={{
             start: new Date(),
           }}
@@ -225,7 +235,7 @@ export const BookingPage = () => {
                   {new Date(slot.start).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
-                    hour12: true, // This ensures AM/PM display
+                    hour12: true,
                   })}
                 </button>
               ))}
