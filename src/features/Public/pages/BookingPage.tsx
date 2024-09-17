@@ -85,6 +85,19 @@ export const BookingPage = () => {
     },
     [availabilityData]
   );
+
+  const getDayCellClassNames = useCallback(
+    (arg: any) => {
+      const baseClasses = "transition-colors duration-200 ease-in-out";
+      if (isDateAvailable(arg.date)) {
+        return `${baseClasses} bg-green-100 hover:bg-green-200 cursor-pointer`;
+      } else {
+        return `${baseClasses} bg-gray-100 text-gray-400 cursor-not-allowed`;
+      }
+    },
+    [isDateAvailable]
+  );
+
   const handleDateClick = async (arg: any) => {
     if (!isDateAvailable(arg.date)) return;
 
@@ -209,6 +222,7 @@ export const BookingPage = () => {
           events={calendarEvents}
           dateClick={handleDateClick}
           selectAllow={(selectInfo) => isDateAvailable(selectInfo.start)}
+          dayCellClassNames={getDayCellClassNames}
           validRange={{
             start: new Date(),
           }}
